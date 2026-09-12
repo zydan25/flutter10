@@ -1,16 +1,23 @@
-name: Build SHOPIK Flutter Web Preview
+name: Build and Deploy SHOPIK Flutter Web Preview
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
   build-web:
-    name: Build Flutter Web for Studio Preview
+    name: Build Flutter Web
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout repository
@@ -19,48 +26,41 @@ jobs:
       - name: Set up Flutter (stable)
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: stable
           cache: true
+
+      - name: Enable Web Support
+        run: flutter config --enable-web
 
       - name: Install Dependencies
         working-directory: ./shopik_flutter
         run: flutter pub get
 
-      - name: Enable Web Support
-        run: flutter config --enable-web
-
       - name: Build Flutter Web
         working-directory: ./shopik_flutter
         run: |
-          flutter build web --release --base-href "/" --no-tree-shake-icons
+          flutter build web \
+            --release \
+            --base-href "/flutter10/" \
+            --no-tree-shake-icons
 
-      - name: Copy Flutter Web to Repository Dist Folder
-        run: |
-          rm -rf flutter_web_dist
-          mkdir -p flutter_web_dist
-          cp -r shopik_flutter/build/web/* flutter_web_dist/
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
 
-      - name: Upload Web Build Artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload Flutter Web to Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: shopik-flutter-web-dist
-          path: flutter_web_dist/
-          retention-days: 30
+          path: ./shopik_flutter/build/web
 
-      - name: Commit & Push Web Build (Optional Auto-Sync)
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add flutter_web_dist/
-          if git diff --staged --quiet; then
-            echo "No changes in flutter_web_dist to commit."
-          else
-            git commit -m "chore(web): update compiled flutter web preview [skip ci]"
-            git push origin HEAD:${{ github.ref_name }} || echo "Push skipped or no permissions"
-          fi
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build-web
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-      - name: Summary
-        run: |
-          echo "### 🌐 تم بناء نسخة Flutter Web بنجاح!" >> $GITHUB_STEP_SUMMARY
-          echo "- تم حفظ ملفات البناء في المجلد: \`flutter_web_dist\`" >> $GITHUB_STEP_SUMMARY
-          echo "- يمكنك تحميل الـ Artifact باسم: \`shopik-flutter-web-dist\`" >> $GITHUB_STEP_SUMMARY
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
