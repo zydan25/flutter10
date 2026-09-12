@@ -1363,7 +1363,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
 
     final app = context.read<AppController>();
-    final hasPrevious = app.operations.any((o) => o.account.contains(targetPhone) || o.title.contains(targetPhone));
+    final hasPrevious = app.operations.any((o) {
+      final phone = '${o['account'] ?? o['phone'] ?? o['recipient'] ?? ''}';
+      final title = '${o['title'] ?? o['service'] ?? o['packageName'] ?? o['name'] ?? ''}';
+      return phone.contains(targetPhone) || title.contains(targetPhone);
+    });
 
     if (hasPrevious) {
       _showRepeatPaymentWarningDialog(

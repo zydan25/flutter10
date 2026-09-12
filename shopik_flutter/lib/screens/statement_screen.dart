@@ -42,7 +42,7 @@ class _StatementScreenState extends State<StatementScreen> {
 
     final app = context.read<AppController>();
     setState(() {
-      _finalBalance = app.balance;
+      _finalBalance = app.balance.toDouble();
       _entries = [];
       _loading = false;
     });
