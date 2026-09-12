@@ -1,15 +1,14 @@
-plugins {
-    id "com.android.application"
-    id "kotlin-android"
-    id "dev.flutter.flutter-gradle-plugin"
-}
-
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
     localPropertiesFile.withReader('UTF-8') { reader ->
         localProperties.load(reader)
     }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    flutterRoot = System.getenv('FLUTTER_ROOT') ?: System.getenv('FLUTTER_HOME')
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -20,6 +19,12 @@ if (flutterVersionCode == null) {
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0.0'
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+if (flutterRoot != null) {
+    apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 }
 
 def keystoreProperties = new Properties()
@@ -58,7 +63,9 @@ android {
                 keyPassword keystoreProperties['keyPassword']
                 storeFile rootProject.file("app/" + keystoreProperties['storeFile']).exists() ? 
                           rootProject.file("app/" + keystoreProperties['storeFile']) : 
-                          rootProject.file(keystoreProperties['storeFile'])
+                          (rootProject.file(keystoreProperties['storeFile']).exists() ? 
+                           rootProject.file(keystoreProperties['storeFile']) : 
+                           file(keystoreProperties['storeFile']))
                 storePassword keystoreProperties['storePassword']
             }
         }
@@ -67,7 +74,9 @@ android {
     buildTypes {
         release {
             signingConfig = (keystoreProperties['storeFile'] != null && 
-                (rootProject.file("app/" + keystoreProperties['storeFile']).exists() || rootProject.file(keystoreProperties['storeFile']).exists())) ? 
+                (rootProject.file("app/" + keystoreProperties['storeFile']).exists() || 
+                 rootProject.file(keystoreProperties['storeFile']).exists() || 
+                 file(keystoreProperties['storeFile']).exists())) ? 
                 signingConfigs.release : signingConfigs.debug
             minifyEnabled false
             shrinkResources false
@@ -85,3 +94,4 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "androidx.fragment:fragment-ktx:1.8.2"
 }
+
