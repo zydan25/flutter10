@@ -119,12 +119,12 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     final user = app.user;
     final first = user?.name.trim().isNotEmpty == true ? user!.name.trim().substring(0, 1) : 'ش';
     final shortcuts = <_HomeShortcut>[
+      _HomeShortcut('طلباتي (${app.orders.length})', 'متابعة وفحص الطلبات والشحنات', Icons.inventory_2_rounded, AppColors.emerald, 11),
       const _HomeShortcut('شبكة السداد', 'خدمات الاتصالات والباقات', Icons.credit_card_rounded, AppColors.burgundy, 1),
-      const _HomeShortcut('متجر شبيك', 'المنتجات والمتاجر والسلل', Icons.storefront_rounded, AppColors.emerald, 2),
-      _HomeShortcut('طلباتي (${app.orders.length})', 'متابعة وفحص الطلبات الحالية', Icons.shopping_bag_rounded, AppColors.emerald, 11),
-      const _HomeShortcut('سجل العمليات', 'العمليات الحقيقية من الخادم', Icons.receipt_long_rounded, AppColors.blue, 3),
+      const _HomeShortcut('متجر شبيك', 'المنتجات والمتاجر والسلل', Icons.storefront_rounded, AppColors.blue, 2),
+      const _HomeShortcut('سجل العمليات', 'العمليات الحقيقية من الخادم', Icons.receipt_long_rounded, AppColors.indigo, 3),
       const _HomeShortcut('كشف الحساب', 'الرصيد والقيود المحاسبية', Icons.account_balance_wallet_rounded, AppColors.teal, 4),
-      const _HomeShortcut('التقارير والإحصائيات', 'مبيعات الخدمات والأداء', Icons.bar_chart_rounded, AppColors.indigo, 5),
+      const _HomeShortcut('التقارير والإحصائيات', 'مبيعات الخدمات والأداء', Icons.bar_chart_rounded, AppColors.purple, 5),
       const _HomeShortcut('تحويل لمشترك', 'إرسال رصيد لمشترك آخر', Icons.send_rounded, AppColors.amber, 6),
       const _HomeShortcut('كروت الوايفاي', 'الشبكات والكروت', Icons.wifi_rounded, AppColors.teal, 7),
       const _HomeShortcut('الألعاب والبرامج', 'الشحن والخدمات الرقمية', Icons.sports_esports_rounded, AppColors.purple, 8),
@@ -234,22 +234,82 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: shortcuts.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 8, mainAxisSpacing: 8, childAspectRatio: 1.36),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 1.55,
+              ),
               itemBuilder: (_, index) {
                 final shortcut = shortcuts[index];
                 return InkWell(
                   onTap: () => _open(context, shortcut.screen),
-                  borderRadius: BorderRadius.circular(17),
+                  borderRadius: BorderRadius.circular(14),
                   child: Container(
-                    padding: const EdgeInsets.all(9),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: AppColors.border)),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Container(width: 28, height: 28, decoration: BoxDecoration(color: shortcut.color, borderRadius: BorderRadius.circular(9)), child: Icon(shortcut.icon, color: Colors.white, size: 16)),
-                      const Spacer(),
-                      Text(shortcut.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
-                      const SizedBox(height: 2),
-                      Text(shortcut.subtitle, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 8.5, color: AppColors.muted, fontWeight: FontWeight.w600)),
-                    ]),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x08000000),
+                          blurRadius: 3,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: shortcut.color.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(7),
+                              ),
+                              child: Icon(shortcut.icon, color: shortcut.color, size: 14),
+                            ),
+                            Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              size: 10,
+                              color: Colors.slate.shade400,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              shortcut.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF0F172A),
+                              ),
+                            ),
+                            const SizedBox(height: 1),
+                            Text(
+                              shortcut.subtitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 8.5,
+                                color: Color(0xFF64748B),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

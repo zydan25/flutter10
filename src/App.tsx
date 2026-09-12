@@ -182,7 +182,7 @@ export default function App() {
   const [unitsCount, setUnitsCount] = useState<string>("10");
 
   // Real or simulated states
-  const [viewMode, setViewMode] = useState<"flutter_web" | "interactive_simulator">("flutter_web");
+  const [viewMode, setViewMode] = useState<"flutter_web" | "interactive_simulator">("interactive_simulator");
   const [userBalanceHidden, setUserBalanceHidden] = useState(true);
   const [walletBalance, setWalletBalance] = useState<number>(6600.0);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {

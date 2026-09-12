@@ -470,68 +470,134 @@ class _StoreViewState extends State<StoreView> {
   }
 
   // ==========================================
-  // 4. Categories Section (Matching StoreView.tsx)
+  // 4. Categories Section (Fixed Grid - No Horizontal Scrolling)
   // ==========================================
   Widget _buildCategoriesSection(List<String> chips, int count) {
+    const categoryCards = [
+      {'name': 'الإلكترونيات', 'icon': Icons.devices_rounded, 'color': Color(0xFF2563EB), 'bg': Color(0xFFEFF6FF)},
+      {'name': 'الملابس', 'icon': Icons.checkroom_rounded, 'color': Color(0xFF7C3AED), 'bg': Color(0xFFF5F3FF)},
+      {'name': 'المأكولات', 'icon': Icons.restaurant_rounded, 'color': Color(0xFFEA580C), 'bg': Color(0xFFFFF7ED)},
+      {'name': 'عطور وتجميل', 'icon': Icons.spa_rounded, 'color': Color(0xFFDB2777), 'bg': Color(0xFFFDF2F8)},
+      {'name': 'أجهزة منزلية', 'icon': Icons.kitchen_rounded, 'color': Color(0xFF059669), 'bg': Color(0xFFECFDF5)},
+      {'name': 'كافة الأقسام', 'icon': Icons.grid_view_rounded, 'color': Color(0xFF1E3A8A), 'bg': Color(0xFFEBF4FC)},
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'أقسام المتجر',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+            Row(
+              children: [
+                const Text(
+                  'أقسام المتجر',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '($count منتج)',
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8)),
+                ),
+              ],
             ),
-            const SizedBox(width: 6),
-            Text(
-              '($count منتج)',
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8)),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 38,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            reverse: true,
-            itemCount: chips.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 7),
-            itemBuilder: (_, i) {
-              final name = chips[i];
-              final active = category == name;
-              return InkWell(
-                onTap: () {
-                  setState(() => category = name);
-                },
-                borderRadius: BorderRadius.circular(20),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 160),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: active ? const Color(0xFF8B1D3B) : Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: active ? const Color(0xFF8B1D3B) : const Color(0xFFE2E8F0),
-                    ),
-                    boxShadow: active
-                        ? const [BoxShadow(color: Color(0x228B1D3B), blurRadius: 6, offset: Offset(0, 2))]
-                        : null,
-                  ),
-                  child: Center(
-                    child: Text(
-                      name,
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const legacy.CategoriesFlutterScreen(initialCategory: 'الكل')),
+                );
+              },
+              borderRadius: BorderRadius.circular(10),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                child: Row(
+                  children: [
+                    Text(
+                      'عرض كافة الأقسام',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w900,
-                        color: active ? Colors.white : const Color(0xFF334155),
+                        color: Color(0xFF1E3A8A),
                       ),
                     ),
-                  ),
+                    SizedBox(width: 3),
+                    Icon(Icons.arrow_back_ios_new_rounded, size: 10, color: Color(0xFF1E3A8A)),
+                  ],
                 ),
-              );
-            },
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        // Fixed 3-column Category Grid without horizontal scrolling
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: categoryCards.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: 1.3,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
           ),
+          itemBuilder: (_, i) {
+            final item = categoryCards[i];
+            final name = item['name'] as String;
+            final icon = item['icon'] as IconData;
+            final color = item['color'] as Color;
+            final bg = item['bg'] as Color;
+
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => legacy.CategoriesFlutterScreen(
+                      initialCategory: name == 'كافة الأقسام' ? 'الكل' : name,
+                    ),
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(14),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  boxShadow: const [
+                    BoxShadow(color: Color(0x06000000), blurRadius: 4, offset: Offset(0, 1)),
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: bg,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(icon, color: color, size: 18),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ],
     );
