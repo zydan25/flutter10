@@ -2550,7 +2550,7 @@ class _CategoryProductsViewState extends State<CategoryProductsView> {
     final app = context.watch<AppController>();
 
     // Filter products
-    List<StoreProduct> filtered = app.products;
+    List<Product> filtered = app.products;
     if (activeCategory != 'الكل') {
       filtered = filtered.where((p) {
         return p.categories.any((c) => c.contains(activeCategory) || activeCategory.contains(c));

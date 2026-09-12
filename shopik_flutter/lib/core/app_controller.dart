@@ -43,6 +43,32 @@ class AppController extends ChangeNotifier {
   Map<String, List<Map<String, dynamic>>> serviceGroupMap = {};
   Map<int, Map<String, dynamic>> serviceDetailsCache = {};
   List<Map<String, dynamic>> serviceSettingsRaw = [];
+  final Map<int, int> cart = {};
+  int get cartCount => cart.values.fold<int>(0, (sum, val) => sum + val);
+
+  void addToCart(int productId, [int quantity = 1]) {
+    cart[productId] = (cart[productId] ?? 0) + quantity;
+    notifyListeners();
+  }
+
+  void removeFromCart(int productId) {
+    cart.remove(productId);
+    notifyListeners();
+  }
+
+  void updateCartQuantity(int productId, int quantity) {
+    if (quantity <= 0) {
+      cart.remove(productId);
+    } else {
+      cart[productId] = quantity;
+    }
+    notifyListeners();
+  }
+
+  void clearCart() {
+    cart.clear();
+    notifyListeners();
+  }
   Timer? _poller;
 
   bool get isLoggedIn => user != null;
