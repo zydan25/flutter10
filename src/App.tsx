@@ -49,6 +49,7 @@ import { SubscriberTransferScreen } from "./components/SubscriberTransferScreen"
 import { WifiNetworksScreen } from "./components/WifiNetworksScreen";
 import { GamesServicesScreen } from "./components/GamesServicesScreen";
 import { LoginScreen } from "./components/LoginScreen";
+import { FlutterWebContainer } from "./components/FlutterWebContainer";
 import { OperationItem, UserProfile } from "./types";
 import {
   fetchLiveUserProfile,
@@ -181,6 +182,7 @@ export default function App() {
   const [unitsCount, setUnitsCount] = useState<string>("10");
 
   // Real or simulated states
+  const [viewMode, setViewMode] = useState<"flutter_web" | "interactive_simulator">("flutter_web");
   const [userBalanceHidden, setUserBalanceHidden] = useState(true);
   const [walletBalance, setWalletBalance] = useState<number>(6600.0);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
@@ -1246,6 +1248,10 @@ export default function App() {
     { label: "66G 4M", price: 6930 },
     { label: "100G 1M", price: 10500 },
   ];
+
+  if (viewMode === "flutter_web") {
+    return <FlutterWebContainer onFallback={() => setViewMode("interactive_simulator")} />;
+  }
 
   if (!isLoggedIn) {
     return (

@@ -1,0 +1,66 @@
+name: Build SHOPIK Flutter Web Preview
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-web:
+    name: Build Flutter Web for Studio Preview
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter (stable)
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        working-directory: ./shopik_flutter
+        run: flutter pub get
+
+      - name: Enable Web Support
+        run: flutter config --enable-web
+
+      - name: Build Flutter Web
+        working-directory: ./shopik_flutter
+        run: |
+          flutter build web --release --base-href "/" --web-renderer canvaskit
+
+      - name: Copy Flutter Web to Repository Dist Folder
+        run: |
+          rm -rf flutter_web_dist
+          mkdir -p flutter_web_dist
+          cp -r shopik_flutter/build/web/* flutter_web_dist/
+
+      - name: Upload Web Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shopik-flutter-web-dist
+          path: flutter_web_dist/
+          retention-days: 30
+
+      - name: Commit & Push Web Build (Optional Auto-Sync)
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add flutter_web_dist/
+          if git diff --staged --quiet; then
+            echo "No changes in flutter_web_dist to commit."
+          else
+            git commit -m "chore(web): update compiled flutter web preview [skip ci]"
+            git push origin HEAD:${{ github.ref_name }} || echo "Push skipped or no permissions"
+          fi
+
+      - name: Summary
+        run: |
+          echo "### 🌐 تم بناء نسخة Flutter Web بنجاح!" >> $GITHUB_STEP_SUMMARY
+          echo "- تم حفظ ملفات البناء في المجلد: \`flutter_web_dist\`" >> $GITHUB_STEP_SUMMARY
+          echo "- يمكنك تحميل الـ Artifact باسم: \`shopik-flutter-web-dist\`" >> $GITHUB_STEP_SUMMARY
