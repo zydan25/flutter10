@@ -5,10 +5,15 @@ import '../widgets/common.dart';
 import 'reference_store.dart';
 import 'reference_account.dart';
 import 'reference_security.dart';
+import 'reference_aliases.dart';
 import 'screen_common.dart';
 import 'payment_screen.dart';
 import 'operations_screen.dart';
 import 'games_services_screen.dart';
+import 'statement_screen.dart';
+import 'reports_screen.dart';
+import 'transfer_screen.dart';
+import 'wifi_screen.dart';
 export 'payment_screen.dart';
 export 'games_services_screen.dart';
 

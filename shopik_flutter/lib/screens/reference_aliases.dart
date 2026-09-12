@@ -3,6 +3,10 @@ import '../models/models.dart';
 import 'reference_home.dart';
 import 'reference_store.dart';
 import 'reference_account_clean.dart';
+import 'reference_security.dart';
+import 'statement_screen.dart' as stmt;
+import 'transfer_screen.dart' as trf;
+import 'wifi_screen.dart' as wf;
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -49,7 +53,7 @@ class ProductDetailScreen extends StatelessWidget {
 class StatementScreen extends StatelessWidget {
   const StatementScreen({super.key});
   @override
-  Widget build(BuildContext context) => const AccountStatementScreen();
+  Widget build(BuildContext context) => const stmt.StatementScreen();
 }
 
 class StoreScreen extends StatelessWidget {
@@ -61,19 +65,19 @@ class StoreScreen extends StatelessWidget {
 class TransferScreen extends StatelessWidget {
   const TransferScreen({super.key});
   @override
-  Widget build(BuildContext context) => const SubscriberTransferScreen();
+  Widget build(BuildContext context) => const trf.TransferScreen();
 }
 
 class WifiScreen extends StatelessWidget {
   const WifiScreen({super.key});
   @override
-  Widget build(BuildContext context) => const WifiNetworksScreen();
+  Widget build(BuildContext context) => const wf.WifiScreen();
 }
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
   @override
-  Widget build(BuildContext context) => const UserProfileEditScreen();
+  Widget build(BuildContext context) => const FingerprintSettingsScreen();
 }
 
 class SupportScreen extends StatelessWidget {
@@ -87,4 +91,5 @@ class NotificationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => const OperationsView();
 }
+
 

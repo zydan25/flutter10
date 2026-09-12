@@ -4,13 +4,27 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart';
+import '../widgets/common.dart';
 import 'api_client.dart';
+
+enum AppTab { home, payment, store, operations, settings }
 
 class AppController extends ChangeNotifier {
   AppController(this.api);
   final ApiClient api;
   UserProfile? user;
   num walletBalance = 0;
+  num get balance => walletBalance;
+  String get balanceFormatted => money(walletBalance);
+  int selectedTab = 0;
+  void setTab(dynamic tab) {
+    if (tab is AppTab) {
+      selectedTab = tab.index;
+    } else if (tab is int) {
+      selectedTab = tab;
+    }
+    notifyListeners();
+  }
   bool loading = false;
   String? error;
   List<Map<String, dynamic>> operations = [];
