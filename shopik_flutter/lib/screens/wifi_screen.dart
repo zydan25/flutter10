@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 import '../core/app_controller.dart';
 import '../widgets/common.dart';
 
-typedef WifiNetworksScreen = WifiScreen;
-
 class WifiScreen extends StatefulWidget {
   const WifiScreen({super.key});
 

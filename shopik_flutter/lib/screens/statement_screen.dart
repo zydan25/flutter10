@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 import '../core/app_controller.dart';
 import '../widgets/common.dart';
 
-typedef AccountStatementScreen = StatementScreen;
-
 class StatementScreen extends StatefulWidget {
   const StatementScreen({super.key, this.onBack});
   final VoidCallback? onBack;

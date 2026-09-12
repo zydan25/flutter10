@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 import '../core/app_controller.dart';
 import '../widgets/common.dart';
 
-typedef SubscriberTransferScreen = TransferScreen;
-
 class TransferScreen extends StatefulWidget {
   const TransferScreen({super.key});
 
