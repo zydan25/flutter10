@@ -32,7 +32,7 @@ jobs:
       - name: Build Flutter Web
         working-directory: ./shopik_flutter
         run: |
-          flutter build web --release --base-href "/" --web-renderer canvaskit
+          flutter build web --release --base-href "/" --no-tree-shake-icons
 
       - name: Copy Flutter Web to Repository Dist Folder
         run: |
